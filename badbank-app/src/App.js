@@ -1,10 +1,26 @@
-import './App.css';
+import React from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import './App.css';
 import Menu from './components/navbar.jsx';
+import Home from './components/home.jsx';
+import Deposit from './components/deposit.jsx';
+import Withdraw from './components/withdraw.jsx';
+import AllData from './components/allData.jsx';
+import Login from './components/login.jsx';
 
 function App() {
   return (
-    <Menu/>
+    <BrowserRouter>
+    <Menu />
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/deposit" element={<Deposit />} />
+      <Route path="/withdraw" element={<Withdraw />} />
+      <Route path="/alldata" element={<AllData />} />
+      <Route path="/login" element={<Login />} />
+    </Routes>
+  </BrowserRouter>
   );
 }
 
