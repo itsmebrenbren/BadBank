@@ -18,7 +18,7 @@ export default function Menu() {
             <Nav.Link as={Link} to="/alldata">All Data</Nav.Link>
           </Nav>
         </Navbar.Collapse>
-        <Nav.Link as={Link} to="/login">Login</Nav.Link>
+        <Nav.Link as={Link} to="/createaccount">Create Account</Nav.Link>
       </Container>
     </Navbar>
   );

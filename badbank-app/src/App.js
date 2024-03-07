@@ -7,7 +7,7 @@ import Home from './components/home.jsx';
 import Deposit from './components/deposit.jsx';
 import Withdraw from './components/withdraw.jsx';
 import AllData from './components/allData.jsx';
-import Login from './components/login.jsx';
+import CreateAccount from './components/createAccount.jsx';
 
 function App() {
   return (
@@ -18,7 +18,7 @@ function App() {
       <Route path="/deposit" element={<Deposit />} />
       <Route path="/withdraw" element={<Withdraw />} />
       <Route path="/alldata" element={<AllData />} />
-      <Route path="/login" element={<Login />} />
+      <Route path="/createaccount" element={<CreateAccount />} />
     </Routes>
   </BrowserRouter>
   );
