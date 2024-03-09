@@ -1,6 +1,6 @@
 import React from 'react';
 import { useAtom } from 'jotai';
-import { userAtom } from './atoms';
+import { userAtom } from './atom';
 import { Container, Card, Table } from 'react-bootstrap';
 
 export default function AllData() {

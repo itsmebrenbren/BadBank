@@ -2,7 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAtom } from 'jotai';
-import { userAtom } from './atoms';
+import { userAtom } from './atom';
 import { Form, Button, Card, Alert, Container } from 'react-bootstrap';
 
 export default function CreateAccount() {

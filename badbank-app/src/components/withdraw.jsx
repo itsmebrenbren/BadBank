@@ -1,7 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useAtom } from 'jotai';
-import { accountAtom } from './atoms';
+import { accountAtom } from './atom';
 import { Alert, Button, Card, Form, Container, InputGroup } from 'react-bootstrap';
 
 export default function Withdraw() {
