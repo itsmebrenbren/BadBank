@@ -2,12 +2,12 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useAtom } from 'jotai';
 import { accountAtom } from './atoms';
-import { Alert, Button, Card, Form, Container } from 'react-bootstrap';
+import { Alert, Button, Card, Form, Container, InputGroup } from 'react-bootstrap';
 
 export default function Deposit() {
   const [accountState, setAccountState] = useAtom(accountAtom);
   const { register, handleSubmit, watch, formState: { errors, isValid } } = useForm({
-    mode: 'onChange',
+    mode: 'onChange', 
   });
 
   const onSubmit = (data) => {
@@ -17,6 +17,7 @@ export default function Deposit() {
         const updatedBalance = prevState.balance + depositAmount;
         return { balance: updatedBalance }; 
       });
+      alert(`You have successfully submitted $${depositAmount.toFixed(2)} into your account.`);
     }
   };
 
@@ -34,12 +35,15 @@ export default function Deposit() {
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Form.Group className="mb-3">
               <Form.Label>Deposit Amount</Form.Label>
-              <Form.Control
-                type="number"
-                step="0.01"
-                {...register("depositAmount", { required: true, min: 0.01 })}
-                isInvalid={!!errors.depositAmount || isInvalidAmount}
-              />
+              <InputGroup>
+                <InputGroup.Text>$</InputGroup.Text>
+                <Form.Control
+                  type="number"
+                  step="0.01"
+                  {...register("depositAmount", { required: true, min: 0.01 })}
+                  isInvalid={!!errors.depositAmount || isInvalidAmount}
+                />
+              </InputGroup>
               {errors.depositAmount?.type === 'required' && <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>}
               {errors.depositAmount?.type === 'min' && <Form.Control.Feedback type="invalid">Deposit must be greater than $0.01.</Form.Control.Feedback>}
               {isInvalidAmount && <Alert variant="danger">Deposit must be a positive number.</Alert>}
@@ -51,6 +55,8 @@ export default function Deposit() {
         </Card.Body>
       </Card>
     </Container>
+
   );
 }
+
 
