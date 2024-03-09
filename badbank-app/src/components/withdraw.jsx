@@ -1,7 +1,11 @@
-import Card from 'react-bootstrap/Card';
+import { Container, Card} from 'react-bootstrap';
 
 export default function Withdraw() {
   return(
-    <Card></Card>
+    <Container>
+      <Card>
+
+      </Card>
+    </Container>
   )
 }

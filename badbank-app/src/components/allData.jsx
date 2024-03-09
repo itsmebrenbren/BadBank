@@ -1,14 +1,13 @@
 import React from 'react';
 import { useAtom } from 'jotai';
-import { userAtom } from './atoms'; // Assuming the atom is named usersAtom and holds an array of user objects
-import Card from 'react-bootstrap/Card';
-import Table from 'react-bootstrap/Table';
+import { userAtom } from './atoms';
+import { Container, Card, Table } from 'react-bootstrap';
 
 export default function AllData() {
-  const [userData] = useAtom(userAtom); // Assuming usersData is an array of user objects
+  const [userData] = useAtom(userAtom);
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center' }}>
+    <Container>
       <Card style={{ marginTop: '5%', minWidth: '1000px' }}>
         <Card.Body>
           <Table striped bordered hover>
@@ -33,7 +32,7 @@ export default function AllData() {
           </Table>
         </Card.Body>
       </Card>
-    </div>
+    </Container>
   );
 }
 

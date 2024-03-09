@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAtom } from 'jotai';
 import { userAtom } from './atoms';
-import { Form, Button, Container, Card, Alert } from 'react-bootstrap';
+import { Form, Button, Card, Alert, Container } from 'react-bootstrap';
 
 export default function CreateAccount() {
   const { register, handleSubmit, watch, reset, formState: { errors, isValid } } = useForm({
@@ -45,7 +45,6 @@ export default function CreateAccount() {
               />
               {errors.firstName && <Form.Control.Feedback type="invalid">First Name is required.</Form.Control.Feedback>}
             </Form.Group>
-
             <Form.Group className="mb-3">
               <Form.Label>Last Name</Form.Label>
               <Form.Control
@@ -55,7 +54,6 @@ export default function CreateAccount() {
               />
               {errors.lastName && <Form.Control.Feedback type="invalid">Last Name is required.</Form.Control.Feedback>}
             </Form.Group>
-
             <Form.Group className="mb-3">
               <Form.Label>Email</Form.Label>
               <Form.Control
@@ -66,7 +64,6 @@ export default function CreateAccount() {
               {errors.email && <Form.Control.Feedback type="invalid">Email is required.</Form.Control.Feedback>}
               {emailFeedback && <Alert variant="warning">{emailFeedback}</Alert>}
             </Form.Group>
-
             <Form.Group className="mb-3">
               <Form.Label>Password</Form.Label>
               <Form.Control
@@ -83,7 +80,6 @@ export default function CreateAccount() {
               {errors.password && <Form.Control.Feedback type="invalid">Password is required.</Form.Control.Feedback>}
               {passwordFeedback && <Alert variant="warning">{passwordFeedback}</Alert>}
             </Form.Group>
-
               <Button 
                 variant="primary" 
                 type="submit" 

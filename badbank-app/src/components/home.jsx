@@ -1,11 +1,10 @@
-import Card from 'react-bootstrap/Card';
-import Container from 'react-bootstrap/esm/Container';
+import { Container, Card } from 'react-bootstrap';
+
 
 export default function Home() {
   return(
-    <>
-      <Container>
-        <Card style={{ marginTop: '15%' }}>
+    <Container>
+        <Card>
           <Card.Body>
             <Card.Title>
               Welcome to Bad Bank
@@ -15,7 +14,6 @@ export default function Home() {
             </Card.Subtitle>
           </Card.Body>
         </Card>
-      </Container>
-    </>
+    </Container>
   )
 }
