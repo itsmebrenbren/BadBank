@@ -5,3 +5,7 @@ body {
 .page-body {
   margin: 10%, 10%, 10%, 10%;
 }
+
+.popover {
+  background-color: cadetblue;
+}

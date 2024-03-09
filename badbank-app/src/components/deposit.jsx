@@ -6,7 +6,7 @@ import { Alert, Button, Card, Form, Container, InputGroup } from 'react-bootstra
 
 export default function Deposit() {
   const [accountState, setAccountState] = useAtom(accountAtom);
-  const { register, handleSubmit, watch, formState: { errors, isValid } } = useForm({
+  const { register, handleSubmit, watch, formState: { errors, isValid }, reset } = useForm({
     mode: 'onChange', 
   });
 
@@ -15,9 +15,10 @@ export default function Deposit() {
     if (!isNaN(depositAmount) && depositAmount > 0) {
       setAccountState((prevState) => {
         const updatedBalance = prevState.balance + depositAmount;
-        return { balance: updatedBalance }; 
+        return { balance: updatedBalance };
       });
       alert(`You have successfully submitted $${depositAmount.toFixed(2)} into your account.`);
+      reset({ depositAmount: '' });
     }
   };
 

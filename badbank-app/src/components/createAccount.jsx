@@ -25,9 +25,9 @@ export default function CreateAccount() {
 
   const onSubmit = (newUserData) => {
     setUser((oldUsers) => [...oldUsers, newUserData]);
-    console.log(newUserData);
     reset();
     setSubmitted(true);
+    alert("You have successfully created an account");
   };
   
 

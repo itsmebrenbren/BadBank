@@ -6,7 +6,7 @@ import { Alert, Button, Card, Form, Container, InputGroup } from 'react-bootstra
 
 export default function Withdraw() {
   const [accountState, setAccountState] = useAtom(accountAtom);
-  const { register, handleSubmit, watch, formState: { errors, isValid } } = useForm({
+  const { register, handleSubmit, watch, formState: { errors, isValid }, reset } = useForm({
     mode: 'onChange',
   });
 
@@ -23,6 +23,7 @@ export default function Withdraw() {
           return { balance: updatedBalance };
         });
         alert(`You have successfully withdrawn $${withdrawalAmount.toFixed(2)} from your account.`);
+        reset({ withdrawAmount: '' });
       } else {
         alert("Withdrawal amount exceeds account balance.");
       }
