@@ -28,11 +28,11 @@ export default function Deposit() {
   return (
     <Container>
       <Card style={{ marginTop: '5%' }}>
-        <Card.Body>
+        <Card.Body className='body-background'>
           <Card.Text>
             Account Balance: ${accountState.balance.toFixed(2)}
           </Card.Text>
-          <Card.Title>Deposit</Card.Title>
+          <Card.Title className='title'>Deposit</Card.Title>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Form.Group className="mb-3">
               <Form.Label>Deposit Amount</Form.Label>

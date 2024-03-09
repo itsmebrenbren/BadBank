@@ -9,3 +9,13 @@ body {
 .popover {
   background-color: cadetblue;
 }
+
+.title {
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  color:darkolivegreen;
+}
+
+.body-background {
+  background-color:antiquewhite;
+}

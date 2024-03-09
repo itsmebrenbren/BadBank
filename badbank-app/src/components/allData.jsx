@@ -9,7 +9,8 @@ export default function AllData() {
   return (
     <Container>
       <Card style={{ marginTop: '5%', minWidth: '1000px' }}>
-        <Card.Body>
+        <Card.Body className='body-background'>
+          <Card.Title className='title'>All Data</Card.Title>
           <Table striped bordered hover>
             <thead>
               <tr>

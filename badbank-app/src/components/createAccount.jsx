@@ -34,7 +34,8 @@ export default function CreateAccount() {
   return (
     <Container>
       <Card style={{ marginTop: '5%' }}>
-        <Card.Body>
+        <Card.Body className='body-background'>
+          <Card.Title className='title'>Create Account</Card.Title>
           <Form onSubmit={handleSubmit(onSubmit)}>
             <Form.Group className="mb-3">
               <Form.Label>First Name</Form.Label>

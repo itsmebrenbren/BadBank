@@ -9,7 +9,7 @@ import { Popover } from 'react-bootstrap';
 
 export default function Menu() {
   const popoverHome = (
-    <Popover id="popover-basic">
+    <Popover id="popover-basic" className='title'>
       <Popover.Header as="h3">Home Page</Popover.Header>
       <Popover.Body>
         Checkout our logo and learn about how terrible we are!
@@ -17,7 +17,7 @@ export default function Menu() {
     </Popover>
   );
   const popoverDeposit = (
-    <Popover id="popover-basic">
+    <Popover id="popover-basic" className='title'>
       <Popover.Header as="h3">Deposit Page</Popover.Header>
       <Popover.Body>
         Discover the wonders of being able to actually put money in a bank account!
@@ -25,7 +25,7 @@ export default function Menu() {
     </Popover>
   );
   const popoverWithdraw = (
-    <Popover id="popover-basic">
+    <Popover id="popover-basic" className='title'>
       <Popover.Header as="h3">Withdraw Page</Popover.Header>
       <Popover.Body>
         For once, be the jerk who gets to take the money out. No landlord here BUT YOU!
@@ -33,7 +33,7 @@ export default function Menu() {
     </Popover>
   );
   const popoverAllData = (
-    <Popover id="popover-basic">
+    <Popover id="popover-basic" className='title'>
       <Popover.Header as="h3">All Data Page</Popover.Header>
       <Popover.Body>
         View everyone's password like it makes a difference!
@@ -41,7 +41,7 @@ export default function Menu() {
     </Popover>
   );
   const popoverCreateAccount = (
-    <Popover id="popover-basic">
+    <Popover id="popover-basic" className='title'>
       <Popover.Header as="h3">Create Account Page</Popover.Header>
       <Popover.Body>
         Make more accounts to stare at in the All Data page!
@@ -50,7 +50,7 @@ export default function Menu() {
   );
 
   return (
-    <Navbar expand="lg" className="bg-body-tertiary sticky-top">
+    <Navbar expand="lg" className="bg-body-tertiary sticky-top title">
       <Container className='fluid sticky-top'>
         <Navbar.Brand as={Link} to="/">BadBank</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
