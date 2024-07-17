@@ -10,6 +10,7 @@
 /coverage
 
 # production
+/badbank-app/build
 /build
 
 # misc
