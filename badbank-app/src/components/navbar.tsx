@@ -40,6 +40,14 @@ export default function Menu() {
       </Popover.Body>
     </Popover>
   );
+  const popoverLogin = (
+    <Popover id="popover-basic" className='title'>
+      <Popover.Header as="h3">Login</Popover.Header>
+      <Popover.Body>
+        Want to do anything on this site? try logging in!
+      </Popover.Body>
+    </Popover>
+  );
 
   return (
     <Navbar expand="lg" className="bg-body-tertiary sticky-top title">
@@ -71,6 +79,13 @@ export default function Menu() {
             </OverlayTrigger>
           </Nav>
         </Navbar.Collapse>
+        <OverlayTrigger
+              placement="bottom"
+              delay={{ show: 250, hide: 400 }}
+              overlay={popoverLogin}
+          >
+          <Nav.Link as={Link} to="/login">Login| </Nav.Link>
+        </OverlayTrigger>
           <OverlayTrigger
               placement="bottom"
               delay={{ show: 250, hide: 400 }}
