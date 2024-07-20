@@ -1,15 +1,13 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Schema, ObjectId } from 'mongoose';
 
-export interface IUser extends Document {
+export interface IUser {
   name: { lastName: string; firstName: string; };
   userName: string;
   email: string;
   password: string;
   createdAt: Date;
+  id?: ObjectId;
 }
-
-export interface IUserCreate extends IUser { };
-
 
 const userSchema: Schema = new Schema({
   name: {
@@ -24,5 +22,6 @@ const userSchema: Schema = new Schema({
 
 const User = mongoose.model<IUser>('User', userSchema);
 export default User;
+
 
 

@@ -8,7 +8,7 @@ export const getUserByEmail = async (email: string): Promise<IUser | null> => {
   return await User.findOne({ email });
 };
 
-export const createUser = async (userData: Omit<IUser, '_id'>): Promise<IUser> => {
+export const createUser = async (userData: IUser): Promise<IUser> => {
   const user = new User(userData);
   return await user.save();
 };
