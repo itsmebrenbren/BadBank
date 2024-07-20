@@ -1,25 +1,28 @@
 import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
+import { createUser, getUserByEmail } from '../dal/userDal';
 import User, { IUser } from '../models/user';
 
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
-  const { name, email, password } = req.body;
+  const { firstName, lastName, userName, email, password } = req.body;
 
   try {
-    let user: IUser | null = await User.findOne({ email });
+    let user: IUser | null = await getUserByEmail(email);
     if (user) {
       res.status(400).json({ msg: 'User already exists' });
       return;
     }
 
-    user = new User({
-      name,
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user = await createUser({
+      name: { firstName, lastName },
+      userName,
       email,
-      password: await bcrypt.hash(password, 10),
+      password: hashedPassword,
+      createdAt: new Date(),
     });
-
-    await user.save();
 
     const payload = {
       user: {
@@ -40,7 +43,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
   const { email, password } = req.body;
 
   try {
-    let user: IUser | null = await User.findOne({ email });
+    let user: IUser | null = await getUserByEmail(email);
     if (!user) {
       res.status(400).json({ msg: 'Invalid credentials' });
       return;
@@ -63,6 +66,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       res.json({ token });
     });
   } catch (error) {
-    res.status(500).send('Server error');
+    res.status 500).send('Server error');
   }
 };
+

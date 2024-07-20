@@ -32,14 +32,6 @@ export default function Menu() {
       </Popover.Body>
     </Popover>
   );
-  const popoverAllData = (
-    <Popover id="popover-basic" className='title'>
-      <Popover.Header as="h3">All Data Page</Popover.Header>
-      <Popover.Body>
-        View everyone's password like it makes a difference!
-      </Popover.Body>
-    </Popover>
-  );
   const popoverCreateAccount = (
     <Popover id="popover-basic" className='title'>
       <Popover.Header as="h3">Create Account Page</Popover.Header>
@@ -76,13 +68,6 @@ export default function Menu() {
               overlay={popoverWithdraw}
             >
               <Nav.Link as={Link} to="/withdraw">Withdraw</Nav.Link>
-            </OverlayTrigger>
-            <OverlayTrigger
-              placement="bottom"
-              delay={{ show: 250, hide: 400 }}
-              overlay={popoverAllData}
-            >
-              <Nav.Link as={Link} to="/alldata">All Data</Nav.Link>
             </OverlayTrigger>
           </Nav>
         </Navbar.Collapse>

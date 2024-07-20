@@ -1,23 +1,27 @@
 import React from 'react';
-import { Route, redirect, RouteProps } from 'react-router-dom';
+import { Route, Routes, RouteProps, Navigate } from 'react-router-dom';
 import { useAtomValue } from 'jotai';
-import { userAtom } from '../atoms/userAtom';
+import { userAtom } from './atoms/userAtom';
 
-interface PrivateRouteProps extends RouteProps {
+interface PrivateRouteProps {
   component: React.ComponentType<any>;
+  path: string;
+  element?: React.ReactNode;
 }
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ component: Component, ...rest }) => {
   const user = useAtomValue(userAtom);
 
   return (
-    <Route
-      {...rest}
-      render={(props) =>
-        user ? <Component {...props} /> : <Redirect to="/login" />
-      }
-    />
+    <Routes>
+      <Route
+        {...rest}
+        element={user ? <Component /> : <Navigate to="/login" />}
+      />
+    </Routes>
   );
 };
 
 export default PrivateRoute;
+
+

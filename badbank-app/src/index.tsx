@@ -12,6 +12,8 @@ if (rootElement) {
       <App />
     </React.StrictMode>
   );
+} else {
+  console.error("Root element not found");
 }
 
 // If you want to start measuring performance in your app, pass a function

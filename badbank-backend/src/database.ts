@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const dbURI = process.env.MONGO_URI || 'mongodb://localhost:27017/mydatabase';
+const dbURI = "mongodb+srv://BrennaBaker:GuppyScuba2024@badbank.tvgccqu.mongodb.net/?retryWrites=true&w=majority&appName=BadBank"
 
 mongoose.connect(dbURI)
   .then(() => {
