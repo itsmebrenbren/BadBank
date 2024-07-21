@@ -3,7 +3,6 @@ dotenv.config();
 
 import express from 'express';
 import cors from 'cors';
-import mongoose from 'mongoose';
 import userRoutes from './routes/userRoutes';
 import accountRoutes from './routes/accountRoutes';
 import authRoutes from './routes/authRoutes';
@@ -16,11 +15,9 @@ const port = process.env.PORT || 3002;
 app.use(cors());
 app.use(express.json());
 
-mongoose.connect('mongodb://localhost:27017/badbank');
-
 app.use('/users', userRoutes);
 app.use('/accounts', accountRoutes);
-app.use('/auth', authRoutes);
+app.use('', authRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

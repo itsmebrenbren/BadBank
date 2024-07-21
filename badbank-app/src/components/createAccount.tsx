@@ -40,12 +40,16 @@ const CreateAccount: React.FC = () => {
     : null;
 
   const onSubmit = async (data: CreateAccountFormValues) => {
+    console.log('Submitting form:', data); // Debugging log
     try {
-      const response = await axios.post<RegisterResponse>('/api/auth/register', {
-        name: `${data.firstName} ${data.lastName}`,
+      const response = await axios.post<RegisterResponse>('http://localhost:3002/api/auth/register', {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        userName: data.userName,
         email: data.email,
         password: data.password,
       });
+      console.log('Server response:', response.data); // Debugging log
       const { token } = response.data;
       localStorage.setItem('token', token);
       const decoded = jwtDecode<User>(token);
@@ -55,6 +59,7 @@ const CreateAccount: React.FC = () => {
       setSubmitted(true);
       alert("You have successfully created an account");
     } catch (error) {
+      console.error('Registration error:', error); // Debugging log
       alert("Failed to create account. Please try again.");
     }
   };
@@ -80,6 +85,14 @@ const CreateAccount: React.FC = () => {
                 {...register("lastName", { required: true, maxLength: 20 })}
               />
               {errors.lastName && <Form.Control.Feedback type="invalid">Last Name is required.</Form.Control.Feedback>}
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>User Name</Form.Label>
+              <Form.Control
+                type="text"
+                {...register("userName", { required: true })}
+              />
+              {errors.userName && <Form.Control.Feedback type="invalid">User Name is required.</Form.Control.Feedback>}
             </Form.Group>
             <Form.Group className="mb-3">
               <Form.Label>Email</Form.Label>
@@ -120,4 +133,3 @@ const CreateAccount: React.FC = () => {
 };
 
 export default CreateAccount;
-

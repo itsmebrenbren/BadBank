@@ -1,24 +1,31 @@
-import mongoose from 'mongoose';
+import { MongoClient, ServerApiVersion } from 'mongodb';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const dbURI = "mongodb+srv://BrennaBaker:GuppyScuba2024@badbank.tvgccqu.mongodb.net/?retryWrites=true&w=majority&appName=BadBank" || 'mongodb://localhost:27017/badbank';
+const dbURI = process.env.DB_URI || "mongodb+srv://BrennaBaker:GuppyScuba2024@badbank.tvgccqu.mongodb.net/?retryWrites=true&w=majority&appName=BadBank";
 
-console.log('Connecting to MongoDB with URI:', dbURI);
-
-mongoose.connect(dbURI)
-  .then(() => {
-    console.log('Database connection established');
-  })
-  .catch((error) => {
-    console.error('Database connection error:', error);
-  });
-
-const db = mongoose.connection;
-
-db.on('disconnected', () => {
-  console.log('Database connection disconnected');
+const client = new MongoClient(dbURI, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
 });
 
-export default db;
+async function connectDB() {
+  try {
+    // Connect the client to the server (optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  } catch (error) {
+    console.error('Database connection error:', error);
+    process.exit(1); // Exit the process with an error code
+  }
+}
+
+connectDB();
+
+export default client;

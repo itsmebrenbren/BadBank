@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { createUser, getUserByEmail } from '../dal/userDAL';
-import { IUser } from '../models/user';
 
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
   const { firstName, lastName, userName, email, password } = req.body;
@@ -15,7 +14,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser: IUser = {
+    const newUser = {
       name: { firstName, lastName },
       userName,
       email,
@@ -27,7 +26,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
 
     const payload = {
       user: {
-        id: user.id,
+        id: user!._id,
       },
     };
 
@@ -36,11 +35,8 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
       res.json({ token });
     });
   } catch (error) {
-    if (error instanceof Error) {
-      res.status(500).send('Server error');
-    } else {
-      res.status(500).send('Unknown server error');
-    }
+    console.error('Error during user registration:', error);
+    res.status(500).json({ error: 'Server error' });
   }
 };
 
@@ -62,7 +58,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 
     const payload = {
       user: {
-        id: user.id,
+        id: user._id,
       },
     };
 
@@ -71,11 +67,9 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       res.json({ token });
     });
   } catch (error) {
-    if (error instanceof Error) {
-      res.status(500).send('Server error');
-    } else {
-      res.status(500).send('Unknown server error');
-    }
+    console.error('Error during user login:', error);
+    res.status(500).json({ error: 'Server error' });
   }
 };
+
 
