@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useAtom } from 'jotai';
 import { userAtom } from './atoms/userAtom';
@@ -21,11 +21,6 @@ export default function Deposit() {
 
   const chequing = user?.accounts?.chequing || 0;
   const savings = user?.accounts?.savings || 0;
-
-  useEffect(() => {
-    console.log('User atom state:', user);
-    console.log('Token:', token);
-  }, [user, token]);
 
   const onSubmit: SubmitHandler<DepositFormInputs> = async (data) => {
     const depositAmount = parseFloat(data.depositAmount.toString());

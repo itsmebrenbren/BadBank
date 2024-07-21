@@ -30,7 +30,6 @@ export const useAuth = () => {
           },
         })
         .then((response) => {
-          console.log('User data fetched on checkAuthStatus:', response.data); // Debugging log
           setUser(response.data);
           setIsAuthenticated(true);
         })
