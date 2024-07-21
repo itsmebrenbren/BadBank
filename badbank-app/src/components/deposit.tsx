@@ -50,7 +50,7 @@ export default function Deposit() {
           ...prevUser,
           accounts: {
             ...prevUser.accounts,
-            [accountType]: updatedBalance,
+            [accountType]: updatedBalance
           }
         }));
         alert(`You have successfully deposited $${depositAmount.toFixed(2)} into your ${accountType} account.`);

@@ -9,6 +9,7 @@ import Deposit from './components/deposit';
 // import Withdraw from './components/withdraw';
 import Login from './components/login';
 import CreateAccount from './components/createAccount';
+import Withdraw from './components/withdraw';
 
 const App: React.FC = () => {
     const { isAuthenticated, checkAuthStatus } = useAuth();
@@ -23,7 +24,7 @@ const App: React.FC = () => {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/deposit" element={isAuthenticated ? <Deposit /> : <Login />}/>
-          {/* <Route path="/withdraw" element={<Withdraw />} /> */}
+          <Route path="/withdraw" element={isAuthenticated ? <Withdraw /> : <Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/createaccount" element={<CreateAccount />} />
         </Routes>

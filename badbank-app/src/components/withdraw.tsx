@@ -1,66 +1,118 @@
-// import React from 'react';
-// import { useForm } from 'react-hook-form';
-// import { useAtom } from 'jotai';
-// import { accountAtom } from './atom';
-// import { Alert, Button, Card, Form, Container, InputGroup } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { useAtom } from 'jotai';
+import { userAtom } from './atoms/userAtom';
+import { Alert, Button, Card, Form, Container, InputGroup } from 'react-bootstrap';
+import axios from 'axios';
+import { useAuth } from './hooks/useAuth';
 
-// export default function Withdraw() {
-//   const [accountState, setAccountState] = useAtom(accountAtom);
-//   const { register, handleSubmit, watch, formState: { errors, isValid }, reset } = useForm({
-//     mode: 'onChange',
-//   });
+interface WithdrawFormInputs {
+  withdrawAmount: number;
+  accountType: 'chequing' | 'savings';
+}
 
-//   const withdrawAmount = watch('withdrawAmount');
-//   const isInvalidAmount = withdrawAmount && (isNaN(withdrawAmount) || withdrawAmount <= 0);
-//   const isOverdraft = withdrawAmount > accountState.balance;
+export default function Withdraw() {
+  const [user, setUser] = useAtom(userAtom);
+  const { token } = useAuth();
+  const { register, handleSubmit, watch, formState: { errors, isValid }, reset } = useForm<WithdrawFormInputs>({
+    mode: 'onChange',
+  });
+  const [accountType, setAccountType] = useState<'chequing' | 'savings'>('chequing');
 
-//   const onSubmit = (data) => {
-//     const withdrawalAmount = parseFloat(data.withdrawAmount);
-//     if (!isNaN(withdrawalAmount) && withdrawalAmount > 0) {
-//       if (withdrawalAmount <= accountState.balance) {
-//         setAccountState((prevState) => {
-//           const updatedBalance = prevState.balance - withdrawalAmount;
-//           return { balance: updatedBalance };
-//         });
-//         alert(`You have successfully withdrawn $${withdrawalAmount.toFixed(2)} from your account.`);
-//         reset({ withdrawAmount: '' });
-//       } else {
-//         alert("Withdrawal amount exceeds account balance.");
-//       }
-//     }
-//   };
+  const chequing = user?.accounts ? user.accounts.chequing : 0;
+  const savings = user?.accounts ? user.accounts.savings : 0;
 
-//   return (
-//     <Container>
-//       <Card style={{ marginTop: '5%' }}>
-//         <Card.Body className='body-background'>
-//           <Card.Text>
-//             Account Balance: ${accountState.balance.toFixed(2)}
-//           </Card.Text>
-//           <Card.Title className='title'>Withdraw</Card.Title>
-//           <Form onSubmit={handleSubmit(onSubmit)}>
-//             <Form.Group className="mb-3">
-//               <Form.Label>Withdraw Amount</Form.Label>
-//               <InputGroup>
-//                 <InputGroup.Text>$</InputGroup.Text>
-//                 <Form.Control
-//                   type="number"
-//                   step="0.01"
-//                   {...register("withdrawAmount", { required: true, min: 0.01 })}
-//                   isInvalid={!!errors.withdrawAmount || isInvalidAmount || isOverdraft}
-//                 />
-//               </InputGroup>
-//               {errors.withdrawAmount?.type === 'required' && <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>}
-//               {errors.withdrawAmount?.type === 'min' && <Form.Control.Feedback type="invalid">Withdrawal must be greater than $0.01.</Form.Control.Feedback>}
-//               {isInvalidAmount && <Alert variant="danger">Withdrawal must be a positive number.</Alert>}
-//               {isOverdraft && <Alert variant="warning">Withdrawal amount exceeds account balance.</Alert>}
-//             </Form.Group>
-//             <Button variant="primary" type="submit" disabled={!isValid || isInvalidAmount || isOverdraft}>
-//               Withdraw
-//             </Button>
-//           </Form>
-//         </Card.Body>
-//       </Card>
-//     </Container>
-//   );
-// }
+
+  useEffect(() => {
+    console.log('User atom state:', user);
+    console.log('Token:', token);
+  }, [user, token]);
+
+  const onSubmit: SubmitHandler<WithdrawFormInputs> = async (data) => {
+    const withdrawAmount = parseFloat(data.withdrawAmount.toString());
+    if (!isNaN(withdrawAmount) && withdrawAmount > 0) {
+      try {
+        console.log('Withdraw request:', {
+          amount: withdrawAmount,
+          accountType,
+        });
+
+        const response = await axios.post('http://localhost:3002/api/accounts/withdraw', {
+          amount: withdrawAmount,
+          accountType,
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        
+        let updatedBalance = response.data.user.accounts[accountType];
+        setUser((prevUser: any) => ({
+          ...prevUser,
+          accounts: {
+            ...prevUser.accounts,
+            [accountType]: updatedBalance
+          }
+        }));
+
+        alert(`You have successfully withdrawn $${withdrawAmount.toFixed(2)} from your ${accountType} account.`);
+        reset({ withdrawAmount: 0 });
+      } catch (error) {
+        alert('An error occurred while processing your withdrawal. Please try again.');
+        console.error('Withdraw error:', error);
+      }
+    }
+  };
+
+  const withdrawAmountValue = watch('withdrawAmount');
+  const isInvalidAmount = withdrawAmountValue && (isNaN(withdrawAmountValue) || withdrawAmountValue <= 0);
+  const isOverdraft = withdrawAmountValue > (accountType === 'chequing' ? chequing : savings);
+
+  return (
+    <Container>
+      <Card style={{ marginTop: '5%' }}>
+        <Card.Body className='body-background'>
+          <Card.Text>
+            Chequing Balance: ${chequing !== undefined ? chequing.toFixed(2) : '0.00'}
+          </Card.Text>
+          <Card.Text>
+            Savings Balance: ${savings !== undefined ? savings.toFixed(2) : '0.00'}
+          </Card.Text>
+          <Card.Title className='title'>Withdraw</Card.Title>
+          <Form onSubmit={handleSubmit(onSubmit)}>
+            <Form.Group className="mb-3">
+              <Form.Label>Account Type</Form.Label>
+              <Form.Control
+                as="select"
+                value={accountType}
+                onChange={(e) => setAccountType(e.target.value as 'chequing' | 'savings')}
+              >
+                <option value="chequing">Chequing</option>
+                <option value="savings">Savings</option>
+              </Form.Control>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Withdraw Amount</Form.Label>
+              <InputGroup>
+                <InputGroup.Text>$</InputGroup.Text>
+                <Form.Control
+                  type="number"
+                  step="0.01"
+                  {...register("withdrawAmount", { required: true, min: 0.01 })}
+                />
+              </InputGroup>
+              {errors.withdrawAmount?.type === 'required' && <Form.Control.Feedback type="invalid">This field is required.</Form.Control.Feedback>}
+              {errors.withdrawAmount?.type === 'min' && <Form.Control.Feedback type="invalid">Withdrawal must be greater than $0.01.</Form.Control.Feedback>}
+              {isInvalidAmount && <Alert variant="danger">Withdrawal must be a positive number.</Alert>}
+              {isOverdraft && <Alert variant="warning">Withdrawal amount exceeds account balance.</Alert>}
+            </Form.Group>
+            <Button variant="primary" type="submit" disabled={!isValid || isInvalidAmount || isOverdraft}>
+              Withdraw
+            </Button>
+          </Form>
+        </Card.Body>
+      </Card>
+    </Container>
+  );
+}
+

@@ -26,14 +26,14 @@ router.post('/api/accounts/deposit', authenticateToken, async (req, res) => {
   }
 });
 
-
-
 router.post('/api/accounts/withdraw', authenticateToken, async (req, res) => {
   try {
     const { amount, accountType } = req.body;
-    const userId = req.user!.id;
+    const userID = req.user!.id;
 
-    const user = await getUserById(userId);
+    console.log('Withdraw request by user:', userID, 'Amount:', amount, 'Account Type:', accountType);
+
+    const user = await getUserById(userID);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -44,9 +44,14 @@ router.post('/api/accounts/withdraw', authenticateToken, async (req, res) => {
       return res.status(400).json({ message: 'Insufficient funds in savings account' });
     }
 
-    const updatedUser = await updateAccountBalance(userId, accountType, -amount);
+    const updatedUser = await updateAccountBalance(userID, accountType, -amount);
 
-    res.status(200).json(updatedUser);
+    if (!updatedUser) {
+      console.log('User not found for ID:', userID);
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json({ user: updatedUser });
   } catch (error) {
     console.error('Withdraw error:', error);
     res.status(500).json({ message: 'Internal server error' });
