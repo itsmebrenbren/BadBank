@@ -1,72 +1,78 @@
-import React from 'react';
-import { useForm } from 'react-hook-form';
-import axios from 'axios';
-import { useSetAtom } from 'jotai';
-import { userAtom, User } from './atoms/userAtom';
-import { useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
+import React, { useState } from 'react';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { Form, Button, Card, Alert, Container } from 'react-bootstrap';
+import { useAuth } from './hooks/useAuth';
+import { Navigate } from 'react-router';
 
 interface LoginFormValues {
   email: string;
   password: string;
 }
 
-interface LoginResponse {
-  token: string;
-}
-
 const Login: React.FC = () => {
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormValues>();
-  const setUser = useSetAtom(userAtom);
-  const navigate = useNavigate();
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
+  const { register, handleSubmit, formState: { errors, isValid }, reset } = useForm<LoginFormValues>({
+    mode: 'onChange',
+  });
+  const { login } = useAuth();
+  const [submitted, setSubmitted] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  const onSubmit = async (data: LoginFormValues) => {
-    setLoading(true);
-    setError(null);
-
+  const onSubmit: SubmitHandler<LoginFormValues> = async (data) => {
     try {
-      const response = await axios.post<LoginResponse>('/api/auth/login', data);
-      const { token } = response.data;
-      localStorage.setItem('token', token);
-      const decoded = jwtDecode<User>(token);
-      setUser(decoded);
-      navigate('/dashboard');
-    } catch (err) {
-      setError('Login failed. Please try again.');
-    } finally {
-      setLoading(false);
+      await login(data.email, data.password);
+      reset();
+      setSubmitted(true);
+      alert("You have successfully logged in");
+      setIsLoggedIn(true);
+    } catch (error) {
+      console.error('Login error:', error);
+      setLoginError("Failed to log in. Please try again.");
     }
   };
 
+  if (isLoggedIn) {
+    return <Navigate to="/" />;
+  }
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)}>
-      <div>
-        <label>Email</label>
-        <input
-          type="email"
-          {...register('email', { required: 'Email is required' })}
-          placeholder="Email"
-        />
-        {errors.email && <p>{errors.email.message}</p>}
-      </div>
-      <div>
-        <label>Password</label>
-        <input
-          type="password"
-          {...register('password', { required: 'Password is required' })}
-          placeholder="Password"
-        />
-        {errors.password && <p>{errors.password.message}</p>}
-      </div>
-      <button type="submit" disabled={loading}>
-        {loading ? 'Logging in...' : 'Login'}
-      </button>
-      {error && <p>{error}</p>}
-    </form>
+    <Container>
+      <Card style={{ marginTop: '5%' }}>
+        <Card.Body className='body-background'>
+          <Card.Title className='title'>Login</Card.Title>
+          <Form onSubmit={handleSubmit(onSubmit)}>
+            <Form.Group className="mb-3">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                {...register("email", { required: true, pattern: /^\S+@\S+$/i })}
+                isInvalid={!!errors.email}
+              />
+              {errors.email && <Form.Control.Feedback type="invalid">Email is required and must be a valid email address.</Form.Control.Feedback>}
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Password</Form.Label>
+              <Form.Control
+                type="password"
+                {...register("password", { required: "Password is required" })}
+                isInvalid={!!errors.password}
+              />
+              {errors.password && <Form.Control.Feedback type="invalid">{errors.password.message}</Form.Control.Feedback>}
+            </Form.Group>
+            {loginError && <Alert variant="danger">{loginError}</Alert>}
+            <Button variant="primary" type="submit" disabled={!isValid}>
+              {submitted ? "Log In Again" : "Log In"}
+            </Button>
+          </Form>
+        </Card.Body>
+      </Card>
+    </Container>
   );
 };
 
 export default Login;
+
+
+
+
 

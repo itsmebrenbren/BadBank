@@ -1,13 +1,26 @@
 import React from 'react';
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import { Link } from 'react-router-dom';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import { Popover } from 'react-bootstrap';
+import { useState } from 'react';
+import { Container, Nav, Navbar, OverlayTrigger, Popover, Dropdown } from 'react-bootstrap';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAtom } from 'jotai';
+import { userAtom } from './atoms/userAtom';
+import { useAuth } from './hooks/useAuth';
 
+interface MenuProps {
+  isAuthenticated: boolean;
+}
 
-export default function Menu() {
+export default function Menu({ isAuthenticated }: MenuProps) {
+  const [user, setUser] = useAtom(userAtom);
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setUser(null);
+    navigate('/');
+  };
+
   const popoverHome = (
     <Popover id="popover-basic" className='title'>
       <Popover.Header as="h3">Home Page</Popover.Header>
@@ -36,7 +49,7 @@ export default function Menu() {
     <Popover id="popover-basic" className='title'>
       <Popover.Header as="h3">Create Account Page</Popover.Header>
       <Popover.Body>
-        Make more accounts to stare at in the All Data page!
+        Make accounts to get free fake money that you can't use anywhere!
       </Popover.Body>
     </Popover>
   );
@@ -56,7 +69,7 @@ export default function Menu() {
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto" variant='underline'>
-          <OverlayTrigger
+            <OverlayTrigger
               placement="bottom"
               delay={{ show: 250, hide: 400 }}
               overlay={popoverHome}
@@ -78,22 +91,28 @@ export default function Menu() {
               <Nav.Link as={Link} to="/withdraw">Withdraw</Nav.Link>
             </OverlayTrigger>
           </Nav>
+       {isAuthenticated && user ? (
+          <Dropdown>
+            <Dropdown.Toggle variant="success" id="dropdown-basic">
+              {user.userName || user.email}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        ) : (
+          <>
+            <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={popoverLogin}>
+              <Nav.Link as={Link} to="/login">Login</Nav.Link>
+            </OverlayTrigger>
+            <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={popoverCreateAccount}>
+              <Nav.Link as={Link} to="/createaccount">Create Account</Nav.Link>
+            </OverlayTrigger>
+          </>
+        )}
         </Navbar.Collapse>
-        <OverlayTrigger
-              placement="bottom"
-              delay={{ show: 250, hide: 400 }}
-              overlay={popoverLogin}
-          >
-          <Nav.Link as={Link} to="/login">Login| </Nav.Link>
-        </OverlayTrigger>
-          <OverlayTrigger
-              placement="bottom"
-              delay={{ show: 250, hide: 400 }}
-              overlay={popoverCreateAccount}
-          >
-          <Nav.Link as={Link} to="/createaccount">Create Account</Nav.Link>
-        </OverlayTrigger>
       </Container>
     </Navbar>
   );
 }
+

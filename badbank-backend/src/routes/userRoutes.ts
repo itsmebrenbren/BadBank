@@ -1,19 +1,21 @@
-// import express from 'express';
-// import { getUserById } from '../dal/userDAL';
+import express from 'express';
+import { getUserById } from '../dal/userDAL';
 
-// const router = express.Router();
+const router = express.Router();
 
-// router.get('/:id', async (req, res) => {
-//   try {
-//     const { id } = req.params;
-//     const user = await getUserById(id);
-//     const accounts = await getAccountsByUserId(id);
-//     res.status(200).send({ user, accounts });
-//   } catch (error) {
-//       res.status(404).send(`Unable to find matching document with id: ${req.params.id}`);
-//     }
-// });
+router.get('/api/users/:id', async (req, res) => {
+  try {
+    const user = await getUserById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
+});
 
-// export default router;
+export default router;
+
 
 

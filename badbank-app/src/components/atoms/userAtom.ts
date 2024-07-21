@@ -6,6 +6,8 @@ export interface User {
   lastName: string;
   userName: string;
   email: string;
+  chequing: number;
+  savings: number;
 }
 
 export const userAtom = atom<User | any | null>(null);
