@@ -40,7 +40,7 @@ const CreateAccount: React.FC = () => {
     : null;
 
   const onSubmit = async (data: CreateAccountFormValues) => {
-    console.log('Submitting form:', data); // Debugging log
+    console.log('Submitting form:', data);
     try {
       const response = await axios.post<RegisterResponse>('http://localhost:3002/api/auth/register', {
         firstName: data.firstName,
@@ -48,13 +48,15 @@ const CreateAccount: React.FC = () => {
         userName: data.userName,
         email: data.email,
         password: data.password,
+        chequing: 1000,
+        savings: 1000
       });
-      console.log('Server response:', response.data); // Debugging log
+      console.log('Server response:', response.data);
       const { token } = response.data;
       localStorage.setItem('token', token);
       const decoded = jwtDecode<User>(token);
       setUser(decoded);
-      navigate('/dashboard');
+
       reset();
       setSubmitted(true);
       alert("You have successfully created an account");

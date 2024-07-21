@@ -3,8 +3,10 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { createUser, getUserByEmail } from '../dal/userDAL';
 
+const jwtSecret = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+
 export const registerUser = async (req: Request, res: Response): Promise<void> => {
-  const { firstName, lastName, userName, email, password } = req.body;
+  const { firstName, lastName, userName, email, password, chequing, savings } = req.body;
 
   try {
     let user = await getUserByEmail(email);
@@ -20,6 +22,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
       email,
       password: hashedPassword,
       createdAt: new Date(),
+      accounts: { chequing, savings }
     };
 
     user = await createUser(newUser);
@@ -30,7 +33,11 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
       },
     };
 
-    jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn: '1h' }, (err, token) => {
+    if (!jwtSecret) {
+      throw new Error('JWT_SECRET is not defined');
+    }
+
+    jwt.sign(payload, jwtSecret, { expiresIn: '1h' }, (err, token) => {
       if (err) throw err;
       res.json({ token });
     });
@@ -62,7 +69,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
       },
     };
 
-    jwt.sign(payload, process.env.JWT_SECRET as string, { expiresIn: '1h' }, (err, token) => {
+    jwt.sign(payload, jwtSecret, { expiresIn: '1h' }, (err, token) => {
       if (err) throw err;
       res.json({ token });
     });
@@ -71,5 +78,3 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
     res.status(500).json({ error: 'Server error' });
   }
 };
-
-

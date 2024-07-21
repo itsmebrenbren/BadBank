@@ -7,6 +7,7 @@ export interface IUser {
   password: string;
   createdAt: Date;
   id?: ObjectId;
+  accounts: { chequing: number; savings: number; };
 }
 
 const userSchema: Schema = new Schema({
@@ -18,6 +19,10 @@ const userSchema: Schema = new Schema({
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
+  accounts: {
+    chequing: { type: Number, required: true },
+    savings: { type: Number, requuired: true}
+  }
 });
 
 const User = mongoose.model<IUser>('User', userSchema);
