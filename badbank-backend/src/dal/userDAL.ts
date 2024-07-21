@@ -19,7 +19,7 @@ export const updateAccountBalance = async (userId: string, accountType: 'chequin
     { $inc: { [updateField]: amount } },
     { returnDocument: 'after' }
   );
-  return result?.value;
+  return result;
 };
 
 export const createUser = async (userData: any) => {
