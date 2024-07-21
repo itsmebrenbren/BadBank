@@ -2,12 +2,29 @@ import { atom } from 'jotai';
 
 export interface User {
   id: string;
-  firstName: string;
-  lastName: string;
+  name: {
+    firstName: string;
+    lastName: string;
+  }
   userName: string;
   email: string;
-  chequing: number;
-  savings: number;
+  accounts: {
+    chequing: number;
+    savings: number;
+  }
 }
 
-export const userAtom = atom<User | any | null>(null);
+export const userAtom = atom<User | null>({
+  id: '',
+  name: {
+    firstName: '',
+    lastName: ''
+  },
+  userName: '',
+  email: '',
+  accounts: {
+    chequing: 0,
+    savings: 0
+  }
+});
+

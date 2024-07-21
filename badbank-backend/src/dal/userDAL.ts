@@ -12,6 +12,16 @@ export const getUserByEmail = async (email: string) => {
   return await usersCollection.findOne({ email });
 };
 
+export const updateAccountBalance = async (userId: string, accountType: 'chequing' | 'savings', amount: number) => {
+  const updateField = accountType === 'chequing' ? 'accounts.chequing' : 'accounts.savings';
+  const result = await usersCollection.findOneAndUpdate(
+    { _id: new ObjectId(userId) },
+    { $inc: { [updateField]: amount } },
+    { returnDocument: 'after' }
+  );
+  return result?.value;
+};
+
 export const createUser = async (userData: any) => {
   const result = await usersCollection.insertOne(userData);
   return { ...userData, _id: result.insertedId };

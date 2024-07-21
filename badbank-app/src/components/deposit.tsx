@@ -1,37 +1,57 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useForm, SubmitHandler } from 'react-hook-form';
 import { useAtom } from 'jotai';
-import { Account, accountAtom } from './atoms/accountAtom';
+import { userAtom } from './atoms/userAtom';
 import { Alert, Button, Card, Form, Container, InputGroup } from 'react-bootstrap';
 import axios from 'axios';
+import { useAuth } from './hooks/useAuth';
 
 interface DepositFormInputs {
   depositAmount: number;
-  userId: string;
   accountType: 'chequing' | 'savings';
 }
 
 export default function Deposit() {
-  const [accountState, setAccountState] = useAtom(accountAtom);
+  const [user, setUser] = useAtom(userAtom);
+  const { token } = useAuth();
   const { register, handleSubmit, watch, formState: { errors, isValid }, reset } = useForm<DepositFormInputs>({
     mode: 'onChange',
   });
-  const [accountType, setAccountType] = useState<'chequing' | 'savings'>('chequing'); // Default to chequing
+  const [accountType, setAccountType] = useState<'chequing' | 'savings'>('chequing');
+
+  const chequing = user?.accounts?.chequing || 0;
+  const savings = user?.accounts?.savings || 0;
+
+  useEffect(() => {
+    console.log('User atom state:', user);
+    console.log('Token:', token);
+  }, [user, token]);
 
   const onSubmit: SubmitHandler<DepositFormInputs> = async (data) => {
     const depositAmount = parseFloat(data.depositAmount.toString());
     if (!isNaN(depositAmount) && depositAmount > 0) {
       try {
-        const response = await axios.post('/api/accounts/deposit', {
-          userId: accountState.userId,
+        console.log('Deposit request:', {
           amount: depositAmount,
-          accountType, // Specify which account to deposit into
+          accountType,
         });
 
-        const updatedBalance = response.data.balance;
-        setAccountState((prevState: Account) => ({
-          ...prevState,
-          [accountType]: updatedBalance, // Update the balance for the selected account type
+        const response = await axios.post('http://localhost:3002/api/accounts/deposit', {
+          amount: depositAmount,
+          accountType,
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+
+        const updatedBalance = response.data.accounts[accountType];
+        setUser((prevUser: any) => ({
+          ...prevUser,
+          accounts: {
+            ...prevUser.accounts,
+            [accountType]: updatedBalance,
+          }
         }));
         alert(`You have successfully deposited $${depositAmount.toFixed(2)} into your ${accountType} account.`);
         reset({ depositAmount: 0 });
@@ -50,10 +70,10 @@ export default function Deposit() {
       <Card style={{ marginTop: '5%' }}>
         <Card.Body className='body-background'>
           <Card.Text>
-            Chequing Balance: ${accountState.chequing.toFixed(2)}
+            Chequing Balance: ${chequing !== undefined ? chequing.toFixed(2) : '0.00'}
           </Card.Text>
           <Card.Text>
-            Savings Balance: ${accountState.savings.toFixed(2)}
+            Savings Balance: ${savings !== undefined ? savings.toFixed(2) : '0.00'}
           </Card.Text>
           <Card.Title className='title'>Deposit</Card.Title>
           <Form onSubmit={handleSubmit(onSubmit)}>
@@ -82,7 +102,7 @@ export default function Deposit() {
               {errors.depositAmount?.type === 'min' && <Form.Control.Feedback type="invalid">Deposit must be greater than $0.01.</Form.Control.Feedback>}
               {isInvalidAmount && <Alert variant="danger">Deposit must be a positive number.</Alert>}
             </Form.Group>
-            <Button variant="primary" type="submit">
+            <Button variant="primary" type="submit" disabled={!isValid}>
               Deposit
             </Button>
           </Form>
@@ -91,5 +111,9 @@ export default function Deposit() {
     </Container>
   );
 }
+
+
+
+
 
 

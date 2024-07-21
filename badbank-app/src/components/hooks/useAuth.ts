@@ -13,11 +13,13 @@ interface DecodedToken {
 
 export const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [token, setToken] = useState<string | null>(null);
   const setUser = useSetAtom(userAtom);
 
   const checkAuthStatus = useCallback(() => {
     const token = localStorage.getItem('token');
     if (token) {
+      setToken(token);
       const decoded: DecodedToken = jwtDecode(token);
       const currentTime = Date.now() / 1000;
 
@@ -28,10 +30,12 @@ export const useAuth = () => {
           },
         })
         .then((response) => {
+          console.log('User data fetched on checkAuthStatus:', response.data); // Debugging log
           setUser(response.data);
           setIsAuthenticated(true);
         })
-        .catch(() => {
+        .catch((err) => {
+          console.error('Error fetching user data:', err);
           localStorage.removeItem('token');
           setIsAuthenticated(false);
         });
@@ -50,6 +54,7 @@ export const useAuth = () => {
     const response = await axios.post<{ token: string }>('http://localhost:3002/api/auth/login', { email, password });
     const { token } = response.data;
     localStorage.setItem('token', token);
+    setToken(token);
 
     const decoded: DecodedToken = jwtDecode(token);
     const userResponse = await axios.get<User>(`http://localhost:3002/api/users/${decoded.user.id}`, {
@@ -57,17 +62,17 @@ export const useAuth = () => {
         Authorization: `Bearer ${token}`,
       },
     });
+    console.log('User data fetched on login:', userResponse.data);
     setUser(userResponse.data);
     setIsAuthenticated(true);
   };
 
   const logout = () => {
     localStorage.removeItem('token');
+    setToken(null);
     setUser(null);
     setIsAuthenticated(false);
   };
 
-  return { isAuthenticated, login, logout, checkAuthStatus };
+  return { isAuthenticated, token, login, logout, checkAuthStatus };
 };
-
-
