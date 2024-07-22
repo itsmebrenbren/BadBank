@@ -31,7 +31,7 @@ export default function Withdraw() {
           accountType,
         });
 
-        const response = await axios.post(`http://104.248.233.243/api/accounts/withdraw`, {
+        const response = await axios.post(`https://104.248.233.243.nip.io/api/accounts/withdraw`, {
           amount: withdrawAmount,
           accountType,
         }, {

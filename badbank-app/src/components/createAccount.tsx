@@ -43,7 +43,7 @@ const CreateAccount: React.FC = () => {
     console.log('Submitting form:', data);
 
     try {
-      const response = await axios.post<RegisterResponse>(`http://104.248.233.243/api/auth/register`, {
+      const response = await axios.post<RegisterResponse>(`https://104.248.233.243.nip.io/api/auth/register`, {
         firstName: data.firstName,
         lastName: data.lastName,
         userName: data.userName,

@@ -31,7 +31,7 @@ export default function Deposit() {
           accountType,
         });
 
-        const response = await axios.post(`http://104.248.233.243/api/accounts/deposit`, {
+        const response = await axios.post(`https://104.248.233.243.nip.io/api/accounts/deposit`, {
           amount: depositAmount,
           accountType,
         }, {
