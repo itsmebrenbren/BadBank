@@ -41,9 +41,9 @@ const CreateAccount: React.FC = () => {
 
   const onSubmit = async (data: CreateAccountFormValues) => {
     console.log('Submitting form:', data);
-    const API_URL = process.env.API_URL
+
     try {
-      const response = await axios.post<RegisterResponse>(`http://${API_URL}/api/auth/register`, {
+      const response = await axios.post<RegisterResponse>(`http://104.248.233.243/api/auth/register`, {
         firstName: data.firstName,
         lastName: data.lastName,
         userName: data.userName,
