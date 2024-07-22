@@ -18,6 +18,7 @@ export default function Deposit() {
     mode: 'onChange',
   });
   const [accountType, setAccountType] = useState<'chequing' | 'savings'>('chequing');
+  const API_URL = process.env.API_URL
 
   const chequing = user?.accounts?.chequing || 0;
   const savings = user?.accounts?.savings || 0;
@@ -31,7 +32,7 @@ export default function Deposit() {
           accountType,
         });
 
-        const response = await axios.post('http://localhost:3002/api/accounts/deposit', {
+        const response = await axios.post(`http://${API_URL}/api/accounts/deposit`, {
           amount: depositAmount,
           accountType,
         }, {

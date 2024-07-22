@@ -19,6 +19,8 @@ export default function Withdraw() {
   });
   const [accountType, setAccountType] = useState<'chequing' | 'savings'>('chequing');
 
+  const API_URL = process.env.API_URL
+
   const chequing = user?.accounts ? user.accounts.chequing : 0;
   const savings = user?.accounts ? user.accounts.savings : 0;
 
@@ -31,7 +33,7 @@ export default function Withdraw() {
           accountType,
         });
 
-        const response = await axios.post('http://localhost:3002/api/accounts/withdraw', {
+        const response = await axios.post(`http://${API_URL}/api/accounts/withdraw`, {
           amount: withdrawAmount,
           accountType,
         }, {
