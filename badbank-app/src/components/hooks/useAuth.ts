@@ -24,7 +24,7 @@ export const useAuth = () => {
       const currentTime = Date.now() / 1000;
 
       if (decoded.exp > currentTime) {
-        axios.get<User>(`http://localhost:3002/api/users/${decoded.user.id}`, {
+        axios.get<User>(`http://104.248.233.243/api/users/${decoded.user.id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
