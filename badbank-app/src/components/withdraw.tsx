@@ -43,7 +43,7 @@ export default function Withdraw() {
           }
         });
 
-        const updatedBalance = response.data.accounts[accountType];
+        const updatedBalance = response.data.user.accounts[accountType];
         setUser((prevUser: any) => ({
           ...prevUser,
           accounts: {
