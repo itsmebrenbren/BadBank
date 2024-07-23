@@ -4,7 +4,8 @@ import { useAtom } from 'jotai';
 import { userAtom } from './atoms/userAtom';
 import { Alert, Button, Card, Form, Container, InputGroup } from 'react-bootstrap';
 import axios from 'axios';
-import { useAuth } from './hooks/useAuth';
+import { useAtomValue } from 'jotai';
+import { authAtom } from './atoms/authAtom';
 
 interface DepositFormInputs {
   depositAmount: number;
@@ -13,7 +14,7 @@ interface DepositFormInputs {
 
 export default function Deposit() {
   const [user, setUser] = useAtom(userAtom);
-  const { token } = useAuth();
+  const isAuthenticated = useAtomValue(authAtom);
   const { register, handleSubmit, watch, formState: { errors, isValid }, reset } = useForm<DepositFormInputs>({
     mode: 'onChange',
   });
@@ -23,6 +24,8 @@ export default function Deposit() {
   const savings = user?.accounts?.savings || 0;
 
   const onSubmit: SubmitHandler<DepositFormInputs> = async (data) => {
+    if (!isAuthenticated) return; // Ensure the user is authenticated
+
     const depositAmount = parseFloat(data.depositAmount.toString());
     if (!isNaN(depositAmount) && depositAmount > 0) {
       try {
@@ -36,7 +39,7 @@ export default function Deposit() {
           accountType,
         }, {
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${localStorage.getItem('token')}` // Use token from localStorage
           }
         });
 

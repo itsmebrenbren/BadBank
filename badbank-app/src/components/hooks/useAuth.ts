@@ -1,8 +1,10 @@
+// src/hooks/useAuth.ts
 import { useState, useEffect, useCallback } from 'react';
 import { useSetAtom } from 'jotai';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 import { userAtom, User } from '../atoms/userAtom';
+import { authAtom, loadingAtom } from '../atoms/authAtom';
 
 interface DecodedToken {
   user: {
@@ -12,8 +14,8 @@ interface DecodedToken {
 }
 
 export const useAuth = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);  // Add loading state
+  const setAuth = useSetAtom(authAtom);
+  const setLoading = useSetAtom(loadingAtom);
   const [token, setToken] = useState<string | null>(null);
   const setUser = useSetAtom(userAtom);
 
@@ -30,34 +32,36 @@ export const useAuth = () => {
             Authorization: `Bearer ${token}`,
           },
         })
-        .then((response) => {
-          console.log('User data fetched on checkAuthStatus:', response.data); // Debugging log
-          setUser(response.data);
-          setIsAuthenticated(true);
-        })
-        .catch((err) => {
-          console.error('Error fetching user data:', err);
-          localStorage.removeItem('token');
-          setIsAuthenticated(false);
-        })
-        .finally(() => {
-          setLoading(false);  // Set loading to false after check
-        });
+          .then((response) => {
+            console.log('User data fetched on checkAuthStatus:', response.data);
+            setUser(response.data);
+            setAuth(true);
+          })
+          .catch((err) => {
+            console.error('Error fetching user data:', err);
+            localStorage.removeItem('token');
+            setAuth(false);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
       } else {
         localStorage.removeItem('token');
-        setIsAuthenticated(false);
-        setLoading(false);  // Set loading to false if token is expired
+        setAuth(false);
+        setLoading(false);
       }
     } else {
-      setLoading(false);  // Set loading to false if no token is found
+      setAuth(false);
+      setLoading(false);
     }
-  }, [setUser]);
+  }, [setAuth, setLoading, setUser]);
 
   useEffect(() => {
     checkAuthStatus();
   }, [checkAuthStatus]);
 
   const login = async (email: string, password: string) => {
+    setLoading(true);
     const response = await axios.post<{ token: string }>('https://104.248.233.243.nip.io/api/auth/login', { email, password });
     const { token } = response.data;
     localStorage.setItem('token', token);
@@ -71,17 +75,18 @@ export const useAuth = () => {
     });
     console.log('User data fetched on login:', userResponse.data);
     setUser(userResponse.data);
-    setIsAuthenticated(true);
-    setLoading(false);  // Set loading to false after login
+    setAuth(true);
+    setLoading(false);
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     setToken(null);
     setUser(null);
-    setIsAuthenticated(false);
-    setLoading(false);  // Set loading to false after logout
+    setAuth(false);
+    setLoading(false);
   };
 
-  return { isAuthenticated, loading, token, login, logout, checkAuthStatus };
+  return { login, logout, checkAuthStatus };
 };
+

@@ -1,8 +1,11 @@
+// src/App.tsx
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { useAuth } from './components/hooks/useAuth';
+import { useAtomValue } from 'jotai';
+import { authAtom, loadingAtom } from './components/atoms/authAtom';
 import ProtectedRoute from './components/protectedRoute';
 import Menu from './components/navbar';
 import Home from './components/home';
@@ -12,16 +15,18 @@ import CreateAccount from './components/createAccount';
 import Withdraw from './components/withdraw';
 
 const App: React.FC = () => {
-  const { isAuthenticated, loading, checkAuthStatus } = useAuth();
+  const isAuthenticated = useAtomValue(authAtom);
+  const loading = useAtomValue(loadingAtom);
+  const { checkAuthStatus } = useAuth();
 
   useEffect(() => {
     checkAuthStatus();
   }, [checkAuthStatus]);
 
-  console.log('App: isAuthenticated =', isAuthenticated); // Debugging log
+  console.log('App: isAuthenticated =', isAuthenticated);
 
   if (loading) {
-    return <div>Loading...</div>; // Show loading indicator while checking auth status
+    return <div>Loading...</div>;
   }
 
   return (
@@ -39,6 +44,7 @@ const App: React.FC = () => {
 };
 
 export default App;
+
 
 
 

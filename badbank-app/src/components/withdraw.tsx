@@ -4,7 +4,8 @@ import { useAtom } from 'jotai';
 import { userAtom } from './atoms/userAtom';
 import { Alert, Button, Card, Form, Container, InputGroup } from 'react-bootstrap';
 import axios from 'axios';
-import { useAuth } from './hooks/useAuth';
+import { useAtomValue } from 'jotai';
+import { authAtom } from './atoms/authAtom';
 
 interface WithdrawFormInputs {
   withdrawAmount: number;
@@ -13,7 +14,7 @@ interface WithdrawFormInputs {
 
 export default function Withdraw() {
   const [user, setUser] = useAtom(userAtom);
-  const { token } = useAuth();
+  const isAuthenticated = useAtomValue(authAtom);
   const { register, handleSubmit, watch, formState: { errors, isValid }, reset } = useForm<WithdrawFormInputs>({
     mode: 'onChange',
   });
@@ -23,6 +24,8 @@ export default function Withdraw() {
   const savings = user?.accounts ? user.accounts.savings : 0;
 
   const onSubmit: SubmitHandler<WithdrawFormInputs> = async (data) => {
+    if (!isAuthenticated) return;
+
     const withdrawAmount = parseFloat(data.withdrawAmount.toString());
     if (!isNaN(withdrawAmount) && withdrawAmount > 0) {
       try {
@@ -36,11 +39,11 @@ export default function Withdraw() {
           accountType,
         }, {
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${localStorage.getItem('token')}` // Use token from localStorage
           }
         });
-        
-        let updatedBalance = response.data.user.accounts[accountType];
+
+        const updatedBalance = response.data.accounts[accountType];
         setUser((prevUser: any) => ({
           ...prevUser,
           accounts: {
@@ -109,4 +112,5 @@ export default function Withdraw() {
     </Container>
   );
 }
+
 

@@ -1,13 +1,20 @@
+// src/components/protectedRoute.tsx
 import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { useAuth } from './hooks/useAuth';
+import { useAtomValue } from 'jotai';
+import { authAtom, loadingAtom } from './atoms/authAtom';
 
 interface ProtectedRouteProps {
   element: React.ReactElement;
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
-  const { isAuthenticated } = useAuth();
+  const isAuthenticated = useAtomValue(authAtom);
+  const loading = useAtomValue(loadingAtom);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
   console.log('ProtectedRoute: isAuthenticated =', isAuthenticated);
 
@@ -15,6 +22,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ element }) => {
 };
 
 export default ProtectedRoute;
+
+
 
 
 
