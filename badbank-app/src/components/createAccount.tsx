@@ -7,7 +7,7 @@ import { Form, Button, Card, Alert, Container } from 'react-bootstrap';
 import axios from 'axios';
 import { Navigate } from 'react-router';
 import { jwtDecode } from 'jwt-decode';
-import { authAtom } from './atoms/authAtom';
+import { authAtom, loadingAtom } from './atoms/authAtom';
 import { useAtom } from 'jotai';
 
 interface CreateAccountFormValues {
@@ -29,6 +29,7 @@ const CreateAccount: React.FC = () => {
   const setUser = useSetAtom(userAtom);
   const [submitted, setSubmitted] = useState(false);
   const [isAuthenticated, setAuth] = useAtom(authAtom);
+  const setLoading = useSetAtom(loadingAtom);
 
   const watchedFields = watch();
 
@@ -43,6 +44,7 @@ const CreateAccount: React.FC = () => {
 
   const onSubmit = async (data: CreateAccountFormValues) => {
     console.log('Submitting form:', data);
+    setLoading(true);
 
     try {
       const response = await axios.post<RegisterResponse>(`https://104.248.233.243.nip.io/api/auth/register`, {
@@ -67,6 +69,8 @@ const CreateAccount: React.FC = () => {
     } catch (error) {
       console.error('Registration error:', error); // Debugging log
       alert("Failed to create account. Please try again.");
+    } finally {
+      setLoading(false);
     }
   };
 
