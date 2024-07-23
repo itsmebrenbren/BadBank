@@ -25,7 +25,7 @@ export const useAuth = () => {
       const currentTime = Date.now() / 1000;
 
       if (decoded.exp > currentTime) {
-        axios.get<User>(`http://localhost:3002/api/users/${decoded.user.id}`, {
+        axios.get<User>(`https://104.248.233.243.nip.io/api/users/${decoded.user.id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -58,13 +58,13 @@ export const useAuth = () => {
   }, [checkAuthStatus]);
 
   const login = async (email: string, password: string) => {
-    const response = await axios.post<{ token: string }>('http://localhost:3002/api/auth/login', { email, password });
+    const response = await axios.post<{ token: string }>('https://104.248.233.243.nip.io/api/auth/login', { email, password });
     const { token } = response.data;
     localStorage.setItem('token', token);
     setToken(token);
 
     const decoded: DecodedToken = jwtDecode(token);
-    const userResponse = await axios.get<User>(`http://localhost:3002/api/users/${decoded.user.id}`, {
+    const userResponse = await axios.get<User>(`https://104.248.233.243.nip.io/api/users/${decoded.user.id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
