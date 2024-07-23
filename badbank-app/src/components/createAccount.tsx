@@ -7,6 +7,8 @@ import { Form, Button, Card, Alert, Container } from 'react-bootstrap';
 import axios from 'axios';
 import { Navigate } from 'react-router';
 import { jwtDecode } from 'jwt-decode';
+import { authAtom } from './atoms/authAtom';
+import { useAtom } from 'jotai';
 
 interface CreateAccountFormValues {
   firstName: string;
@@ -26,7 +28,7 @@ const CreateAccount: React.FC = () => {
   });
   const setUser = useSetAtom(userAtom);
   const [submitted, setSubmitted] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isAuthenticated, setAuth] = useAtom(authAtom);
 
   const watchedFields = watch();
 
@@ -61,14 +63,14 @@ const CreateAccount: React.FC = () => {
       reset();
       setSubmitted(true);
       alert("You have successfully created an account");
-      setIsLoggedIn(true);
+      setAuth(true);
     } catch (error) {
       console.error('Registration error:', error); // Debugging log
       alert("Failed to create account. Please try again.");
     }
   };
 
-  if (isLoggedIn) {
+  if (isAuthenticated) {
     return <Navigate to="/" />;
   }
 
