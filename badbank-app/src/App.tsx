@@ -12,25 +12,28 @@ import CreateAccount from './components/createAccount';
 import Withdraw from './components/withdraw';
 
 const App: React.FC = () => {
-    const { isAuthenticated, checkAuthStatus } = useAuth();
+  const { isAuthenticated, checkAuthStatus } = useAuth();
 
   useEffect(() => {
     checkAuthStatus();
   }, [checkAuthStatus]);
 
+  console.log('App: isAuthenticated =', isAuthenticated);
+
   return (
-      <BrowserRouter>
-        <Menu isAuthenticated={isAuthenticated} />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/deposit" element={<ProtectedRoute element={<Deposit />} />} />
-         <Route path="/withdraw" element={<ProtectedRoute element={<Withdraw />} />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/createaccount" element={<CreateAccount />} />
-        </Routes>
-      </BrowserRouter>
+    <BrowserRouter>
+      <Menu isAuthenticated={isAuthenticated} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/deposit" element={<ProtectedRoute element={<Deposit />} />} />
+        <Route path="/withdraw" element={<ProtectedRoute element={<Withdraw />} />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/createaccount" element={<CreateAccount />} />
+      </Routes>
+    </BrowserRouter>
   );
 };
 
 export default App;
+
 
