@@ -12,13 +12,17 @@ import CreateAccount from './components/createAccount';
 import Withdraw from './components/withdraw';
 
 const App: React.FC = () => {
-  const { isAuthenticated, checkAuthStatus } = useAuth();
+  const { isAuthenticated, loading, checkAuthStatus } = useAuth();
 
   useEffect(() => {
     checkAuthStatus();
   }, [checkAuthStatus]);
 
-  console.log('App: isAuthenticated =', isAuthenticated);
+  console.log('App: isAuthenticated =', isAuthenticated); // Debugging log
+
+  if (loading) {
+    return <div>Loading...</div>; // Show loading indicator while checking auth status
+  }
 
   return (
     <BrowserRouter>
@@ -35,5 +39,6 @@ const App: React.FC = () => {
 };
 
 export default App;
+
 
 

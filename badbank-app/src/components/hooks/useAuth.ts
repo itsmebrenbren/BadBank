@@ -13,6 +13,7 @@ interface DecodedToken {
 
 export const useAuth = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);  // Add loading state
   const [token, setToken] = useState<string | null>(null);
   const setUser = useSetAtom(userAtom);
 
@@ -24,12 +25,13 @@ export const useAuth = () => {
       const currentTime = Date.now() / 1000;
 
       if (decoded.exp > currentTime) {
-        axios.get<User>(`https://104.248.233.243.nip.io/api/users/${decoded.user.id}`, {
+        axios.get<User>(`http://localhost:3002/api/users/${decoded.user.id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         })
         .then((response) => {
+          console.log('User data fetched on checkAuthStatus:', response.data); // Debugging log
           setUser(response.data);
           setIsAuthenticated(true);
         })
@@ -37,11 +39,17 @@ export const useAuth = () => {
           console.error('Error fetching user data:', err);
           localStorage.removeItem('token');
           setIsAuthenticated(false);
+        })
+        .finally(() => {
+          setLoading(false);  // Set loading to false after check
         });
       } else {
         localStorage.removeItem('token');
         setIsAuthenticated(false);
+        setLoading(false);  // Set loading to false if token is expired
       }
+    } else {
+      setLoading(false);  // Set loading to false if no token is found
     }
   }, [setUser]);
 
@@ -50,13 +58,13 @@ export const useAuth = () => {
   }, [checkAuthStatus]);
 
   const login = async (email: string, password: string) => {
-    const response = await axios.post<{ token: string }>('https://104.248.233.243.nip.io/api/auth/login', { email, password });
+    const response = await axios.post<{ token: string }>('http://localhost:3002/api/auth/login', { email, password });
     const { token } = response.data;
     localStorage.setItem('token', token);
     setToken(token);
 
     const decoded: DecodedToken = jwtDecode(token);
-    const userResponse = await axios.get<User>(`https://104.248.233.243.nip.io/api/users/${decoded.user.id}`, {
+    const userResponse = await axios.get<User>(`http://localhost:3002/api/users/${decoded.user.id}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -64,6 +72,7 @@ export const useAuth = () => {
     console.log('User data fetched on login:', userResponse.data);
     setUser(userResponse.data);
     setIsAuthenticated(true);
+    setLoading(false);  // Set loading to false after login
   };
 
   const logout = () => {
@@ -71,7 +80,8 @@ export const useAuth = () => {
     setToken(null);
     setUser(null);
     setIsAuthenticated(false);
+    setLoading(false);  // Set loading to false after logout
   };
 
-  return { isAuthenticated, token, login, logout, checkAuthStatus };
+  return { isAuthenticated, loading, token, login, logout, checkAuthStatus };
 };
