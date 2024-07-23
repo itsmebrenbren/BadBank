@@ -19,3 +19,7 @@ body {
 .body-background {
   background-color:antiquewhite;
 }
+
+.nav-link-space {
+  margin-right: 10px;
+}

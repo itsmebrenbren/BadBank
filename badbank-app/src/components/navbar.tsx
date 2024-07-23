@@ -1,5 +1,4 @@
 import React from 'react';
-import { useState } from 'react';
 import { Container, Nav, Navbar, OverlayTrigger, Popover, Dropdown } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAtom } from 'jotai';
@@ -15,11 +14,6 @@ export default function Menu({ isAuthenticated }: MenuProps) {
   const { logout } = useAuth();
   const navigate = useNavigate();
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    setUser(null);
-    navigate('/');
-  };
 
   const popoverHome = (
     <Popover id="popover-basic" className='title'>
@@ -94,7 +88,7 @@ export default function Menu({ isAuthenticated }: MenuProps) {
        {isAuthenticated && user ? (
           <Dropdown>
             <Dropdown.Toggle variant="success" id="dropdown-basic">
-              {user.userName || user.email}
+              {user.userName}
             </Dropdown.Toggle>
             <Dropdown.Menu>
               <Dropdown.Item onClick={logout}>Logout</Dropdown.Item>
@@ -103,10 +97,10 @@ export default function Menu({ isAuthenticated }: MenuProps) {
         ) : (
           <>
             <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={popoverLogin}>
-              <Nav.Link as={Link} to="/login">Login</Nav.Link>
+              <Nav.Link as={Link} to="/login" className='nav-link-space'>login</Nav.Link>
             </OverlayTrigger>
             <OverlayTrigger placement="bottom" delay={{ show: 250, hide: 400 }} overlay={popoverCreateAccount}>
-              <Nav.Link as={Link} to="/createaccount">Create Account</Nav.Link>
+              <Nav.Link as={Link} to="/createaccount" className='nav-link-space'>Create Account</Nav.Link>
             </OverlayTrigger>
           </>
         )}
