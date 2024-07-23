@@ -5,7 +5,7 @@ import { useSetAtom } from 'jotai';
 import { userAtom, User } from './atoms/userAtom';
 import { Form, Button, Card, Alert, Container } from 'react-bootstrap';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { Navigate } from 'react-router';
 import { jwtDecode } from 'jwt-decode';
 
 interface CreateAccountFormValues {
@@ -25,8 +25,8 @@ const CreateAccount: React.FC = () => {
     mode: 'onChange',
   });
   const setUser = useSetAtom(userAtom);
-  const navigate = useNavigate();
   const [submitted, setSubmitted] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const watchedFields = watch();
 
@@ -61,11 +61,16 @@ const CreateAccount: React.FC = () => {
       reset();
       setSubmitted(true);
       alert("You have successfully created an account");
+      setIsLoggedIn(true);
     } catch (error) {
       console.error('Registration error:', error); // Debugging log
       alert("Failed to create account. Please try again.");
     }
   };
+
+  if (isLoggedIn) {
+    return <Navigate to="/" />;
+  }
 
   return (
     <Container>
