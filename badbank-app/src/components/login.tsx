@@ -3,6 +3,8 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { Form, Button, Card, Alert, Container } from 'react-bootstrap';
 import { useAuth } from './hooks/useAuth';
 import { Navigate } from 'react-router';
+import { authAtom } from './atoms/authAtom';
+import { useAtomValue } from 'jotai';
 
 interface LoginFormValues {
   email: string;
@@ -14,6 +16,7 @@ const Login: React.FC = () => {
     mode: 'onChange',
   });
   const { login } = useAuth();
+  const isAuthenticated = useAtomValue(authAtom);
   const [submitted, setSubmitted] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -31,7 +34,7 @@ const Login: React.FC = () => {
     }
   };
 
-  if (isLoggedIn === true) {
+  if (isAuthenticated) {
     return <Navigate to="/" />;
   }
 
