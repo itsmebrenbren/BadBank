@@ -1,4 +1,3 @@
-// src/App.tsx
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -13,6 +12,7 @@ import Deposit from './components/deposit';
 import Login from './components/login';
 import CreateAccount from './components/createAccount';
 import Withdraw from './components/withdraw';
+import { Navigate } from 'react-router-dom';
 
 const App: React.FC = () => {
   const isAuthenticated = useAtomValue(authAtom);
@@ -34,6 +34,7 @@ const App: React.FC = () => {
       <Menu isAuthenticated={isAuthenticated} />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/brenna-langillebakerFullStackBankingApplication" element={<Navigate to="/" />} />
         <Route path="/deposit" element={<ProtectedRoute element={<Deposit />} />} />
         <Route path="/withdraw" element={<ProtectedRoute element={<Withdraw />} />} />
         <Route path="/login" element={<Login />} />
